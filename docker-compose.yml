@@ -1,0 +1,96 @@
+version: '3.4'
+
+networks:
+  e-com-case-study-network:
+    driver: bridge
+
+services:
+  order:
+    build:
+      context: ./src/Services/Order
+      dockerfile: dockerfile
+    entrypoint: /bin/sh -c "sleep 15 && exec dotnet Order.dll"
+    depends_on:
+      - order-db
+      - rabbitmq
+    ports:
+      - 5001:8080
+    networks:
+      - e-com-case-study-network
+    container_name: order-container
+    restart: unless-stopped
+
+  stock:
+    build:
+      context: ./src/Services/Stock
+      dockerfile: dockerfile
+    entrypoint: /bin/sh -c "sleep 15 && exec dotnet Stock.dll"
+    depends_on:
+      - stock-db
+      - rabbitmq
+    ports:
+      - 5002:8080
+    networks:
+      - e-com-case-study-network
+    container_name: stock-container
+    restart: unless-stopped
+    
+  notification:
+    build:
+      context: ./src/Services/Notification
+      dockerfile: dockerfile
+    entrypoint: /bin/sh -c "sleep 15 && exec dotnet Notification.dll"
+    depends_on:
+      - rabbitmq
+    ports:
+      - 5003:8080
+    networks:
+      - e-com-case-study-network
+    container_name: notification-container
+    restart: unless-stopped
+
+  order-db:
+    image: postgres:latest
+    container_name: order-db
+    environment:
+      - POSTGRES_USER=orderDbUser
+      - POSTGRES_PASSWORD=orderDbPass
+      - POSTGRES_DB=OrderDb
+    ports:
+      - "5433:5432"
+    restart: always
+    volumes:
+      - order_app_data:/var/lib/postgresql/data
+    networks:
+      - e-com-case-study-network
+
+  stock-db:
+    image: postgres:latest
+    container_name: stock-db
+    environment:
+      - POSTGRES_USER=stockDbUser
+      - POSTGRES_PASSWORD=stockDbPass
+      - POSTGRES_DB=StockDb
+    ports:
+      - "5434:5432"
+    restart: always
+    volumes:
+      - stock_app_data:/var/lib/postgresql/data
+    networks:
+      - e-com-case-study-network
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq-container
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=adminpassword
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - e-com-case-study-network
+
+volumes:
+  order_app_data:
+  stock_app_data:

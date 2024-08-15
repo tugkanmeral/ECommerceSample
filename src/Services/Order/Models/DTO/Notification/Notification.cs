@@ -1,0 +1,1 @@
+﻿public record Notification(string Recipient, string Subject, string Message);

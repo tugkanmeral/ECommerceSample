@@ -1,0 +1,1 @@
+public record ProductQuantityDTO(Guid ProductId, long Quantity);
