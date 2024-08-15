@@ -2,7 +2,7 @@
 Bu projede mikroservis mimarisi ile sipariş süreci ele alınmıştır. Asp.NET Web Api, PostgreSQL, EntityFramework, Docker, RabbitMQ teknolojileri kullanılarak geliştirilen bu yapıda akış SAGA (orchestration) design patterni ile sağlanmıştır.
 
 ## Akış
-![Flowchart](https://github.com/user-attachments/assets/81dfc8ae-455f-45af-8f9a-998781224e39)
+![Flowchart](https://github.com/user-attachments/assets/83bba3f9-5d78-445c-bd07-7517c2096994)
 
 ## Servisler
 ### Order
